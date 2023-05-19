@@ -5,7 +5,7 @@
 O projeto tem como objetivo desenvolver um aplicativo simples de controle de estacionamento, onde os usuários poderão registrar a entrada e saída de veículos. O sistema permitirá a configuração dos valores praticados pelo estacionamento por meio de uma tabela de preços com controle de vigência. Por exemplo, será possível definir valores válidos para um determinado período.
 O objetivo final é fornecer aos usuários uma solução intuitiva e eficiente para o controle de estacionamento, permitindo um gerenciamento adequado das entradas, saídas e valores praticados.
 
-#Pré-requisitos
+# Pré-requisitos
 
 Para executar o projeto, é necessário atender aos seguintes pré-requisitos:
 .NET 6: O projeto é desenvolvido em .NET 6. Portanto, certifique-se de ter o SDK do .NET 6 instalado em sua máquina. Você pode fazer o download do SDK mais recente em: https://dotnet.microsoft.com/download/dotnet/6.0
@@ -13,7 +13,7 @@ SQL Server Local: O projeto utiliza o banco de dados SQL Server localmente. Cert
 Node.js 18.6: Para o frontend do projeto, é utilizado o React com a versão do Node.js 18.6. Certifique-se de ter o Node.js instalado em sua máquina. Você pode fazer o download da versão mais recente do Node.js em: https://nodejs.org
 Dependências do projeto: Após ter o Node.js instalado, navegue até a pasta do projeto frontend em React e execute o comando npm install para instalar todas as dependências necessárias.
 
-#Estrutura do Projeto 
+# Estrutura do Projeto 
 
 A estrutura do projeto segue o padrão MVC (Model-View-Controller) no backend, com uma organização de diretórios que segue as boas práticas de desenvolvimento e separação de responsabilidades. A seguir, fornecerei uma visão geral das principais pastas e arquivos do projeto:
 
