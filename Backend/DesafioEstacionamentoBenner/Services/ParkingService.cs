@@ -84,7 +84,7 @@ public class ParkingService : IParkingService
 
         if (!vehicle.IsInsideParking)
         {
-            throw new Exception("Veículo não está dentro do estacionamento.");
+            throw new AppException("Veículo não está dentro do estacionamento.");
         }
 
         vehicle.DepartureDate = entity.DepartureDate;
