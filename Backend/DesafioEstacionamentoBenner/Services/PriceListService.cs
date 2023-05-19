@@ -1,6 +1,8 @@
 ﻿using DesafioEstacionamentoBenner.Repositories.Interfaces;
 using DesafioEstacionamentoBenner.Services.Interfaces;
+using Infrastructure.DTO;
 using Infrastructure.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace DesafioEstacionamentoBenner.Services;
 
@@ -25,8 +27,22 @@ public class PriceListService : IPriceListService
 
     public async Task<PriceList> PostAsync(PriceList entity)
     {
-        return await _repository.PostAsync(entity);
+        // Verifica se existe alguma tabela de preço que tenha uma sobreposição de datas
+        var existingPriceList = await HasPriceListInDateRangeAsync(entity.InitialDate, entity.FinalDate);
+
+        if (existingPriceList)
+        {
+            // Caso exista uma tabela de preço com sobreposição de datas, você pode lançar uma exceção ou tratar de acordo com a lógica do seu aplicativo
+            throw new AppException("Já existe uma tabela de preço cadastrada para o mesmo período.");
+        }
+        else
+        {
+            // Caso não exista sobreposição de datas, realiza a operação de persistência
+            return await _repository.PostAsync(entity);
+        }
     }
+
+
 
     public async Task<PriceList> PutAsync(PriceList entity)
     {
@@ -80,6 +96,14 @@ public class PriceListService : IPriceListService
         }
 
         return totalCharge;
+    }
+
+    public async Task<bool> HasPriceListInDateRangeAsync(DateTime startDate, DateTime endDate)
+    {
+        var priceLists = await _repository.GetAllAsync();
+        var hasPriceList = priceLists.Any(pl => pl.InitialDate <= endDate && pl.FinalDate >= startDate);
+
+        return hasPriceList;
     }
 }
 

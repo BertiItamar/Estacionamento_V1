@@ -3,6 +3,7 @@ using DesafioEstacionamentoBenner.Repositories.Interfaces;
 using DesafioEstacionamentoBenner.Services;
 using DesafioEstacionamentoBenner.Services.Interfaces;
 using Infrastructure.DataBase;
+using Infrastructure.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,35 +21,45 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Injection Dependencies Services
 builder.Services.AddTransient<IParkingService, ParkingService>();
 builder.Services.AddTransient<IPriceListService, PriceListService>();
 
-// Injection Dependencies Repositories
 builder.Services.AddTransient<IParkingRepository, ParkingRepository>();
 builder.Services.AddTransient<IPriceListRepository, PriceListRepository>();
 
+// Este bloco de código é condicionalmente compilado com base na definição da constante de compilação 'TESTE'.
+// Se a constante de compilação 'TESTE' estiver definida, o bloco dentro de '#if TESTE' será incluído na compilação.
+// Caso contrário, o bloco dentro de '#else' será executado.
 #if TESTE
+// Adiciona um contexto de banco de dados usando o provedor de banco de dados SQL Server.
+// Configura o contexto com a cadeia de conexão "DatabaseTest" e define opções específicas do SQL Server.
 builder.Services.AddDbContext<Context>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseTest"),
-        sqlServerOptionsAction: sqlOptions =>
-        {
-            sqlOptions.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(30),
-                errorNumbersToAdd: null);
-        }));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseTest"),
+    sqlServerOptionsAction: sqlOptions =>
+    {
+        // Habilita tentativas de reexecução em caso de falhas na conexão.
+        // Define um máximo de 5 tentativas e um atraso máximo de 30 segundos entre elas.
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null);
+    }));
 #else
-builder.Services.AddDbContext<Context>(options =>
+    // Adiciona um contexto de banco de dados usando o provedor de banco de dados SQL Server.
+    // Configura o contexto com a cadeia de conexão "Database" e define opções específicas do SQL Server.
+    builder.Services.AddDbContext<Context>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("Database"),
         sqlServerOptionsAction: sqlOptions =>
         {
+            // Habilita tentativas de reexecução em caso de falhas na conexão.
+            // Define um máximo de 5 tentativas e um atraso máximo de 30 segundos entre elas.
             sqlOptions.EnableRetryOnFailure(
                 maxRetryCount: 5,
                 maxRetryDelay: TimeSpan.FromSeconds(30),
                 errorNumbersToAdd: null);
         }));
 #endif
+
 
 WebApplication app = builder.Build();
 
@@ -65,6 +76,8 @@ using (IServiceScope scope = app.Services.CreateScope())
     }
 #endif
 }
+
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseCors("MyPolicy");
 

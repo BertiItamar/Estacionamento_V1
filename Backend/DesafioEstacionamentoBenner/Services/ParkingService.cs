@@ -1,6 +1,7 @@
 ﻿using DesafioEstacionamentoBenner.DTO_s;
 using DesafioEstacionamentoBenner.Repositories.Interfaces;
 using DesafioEstacionamentoBenner.Services.Interfaces;
+using Infrastructure.DTO;
 using Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -44,7 +45,7 @@ public class ParkingService : IParkingService
 
         if (activePriceList == null)
         {
-            throw new Exception("Nenhuma tabela de preços ativa encontrada para a data de entrada.");
+            throw new AppException("Nenhuma tabela de preços ativa encontrada para a data de entrada.");
         }
 
         Parking newParking = new Parking
@@ -71,19 +72,19 @@ public class ParkingService : IParkingService
 
         if (activePriceList == null)
         {
-            throw new Exception("Nenhuma tabela de preços ativa encontrada para a data de saída.");
+            throw new AppException("Nenhuma tabela de preços ativa encontrada para a data de saída.");
         }
 
         var vehicle = await GetVehicleByLicensePlate(entity.LicensePlate);
 
         if (vehicle == null)
         {
-            throw new Exception("Veículo não encontrado.");
+            throw new AppException("Veículo não encontrado.");
         }
 
         if (!vehicle.IsInsideParking)
         {
-            throw new Exception("Veículo não está dentro do estacionamento.");
+            throw new AppException("Veículo não está dentro do estacionamento.");
         }
 
         vehicle.DepartureDate = entity.DepartureDate;
