@@ -43,6 +43,14 @@ public class ParkingService : IParkingService
     {
         PriceList activePriceList = _priceListService.GetActivePriceList(entity.EntryDate);
 
+        var existingVehicle = await _repository.GetDbSet()
+       .FirstOrDefaultAsync(vehicle => vehicle.LicensePlate == entity.LicensePlate && vehicle.IsInsideParking);
+
+        if (existingVehicle != null)
+        {
+            throw new AppException("O veículo já está dentro do estacionamento.");
+        }
+
         if (activePriceList == null)
         {
             throw new AppException("Nenhuma tabela de preços ativa encontrada para a data de entrada.");
@@ -127,6 +135,11 @@ public class ParkingService : IParkingService
     /// <returns>Tupla contendo a duração e o tempo cobrado.</returns>
     private (int DurationMinutes, int ChargedHours) CalculateDurationAndChargedTime(DateTime entryDate, DateTime departureDate)
     {
+        if(departureDate < entryDate)
+        {
+            throw new AppException("A data de saída precisa ser maior que a data de entrada!");
+        }
+
         TimeSpan duration = departureDate - entryDate;
 
         int durationMinutes = (int)duration.TotalMinutes;

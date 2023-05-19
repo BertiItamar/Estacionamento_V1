@@ -6,6 +6,7 @@ import api from '../Services/api';
 import CadastroModal from '../Components/Modal/ModalRegistration';
 import SaidaModal from '../Components/Modal/ModalExit';
 import ModalCadastroValores from '../Components/Modal/ModalValuesParking';
+import useMessage from 'antd/es/message/useMessage';
 
 const dayjs = require('dayjs');
 
@@ -44,7 +45,7 @@ export default function Home() {
         setLoading(false);
         message.success('Veículo cadastrado com sucesso!');
       })
-      .catch((e) => console.log(e));
+      .catch((e) => message.error('Erro ao tentar cadastrar veículo'));
     closeCadastroModal();
     GetParking();
   };
@@ -67,7 +68,7 @@ export default function Home() {
         setLoading(false);
         message.success('Veículo finalizado com sucesso!');
       })
-      .catch((e) => console.log(e));
+      .catch((e) => message.error('Erro ao tentar finalizar veículo'));
     closeSaidaModal();
     GetParking();
   };
@@ -87,7 +88,7 @@ export default function Home() {
         setLoading(false);
         message.success('Preço do Estacionamento cadastrado com sucesso!');
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {});
     setIsModalVisible(false);
     GetPriceList();
   };
@@ -124,9 +125,7 @@ export default function Home() {
         });
         setDataSourcePrice(listObjects);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => {});
   }
 
   async function GetParking() {
@@ -164,7 +163,7 @@ export default function Home() {
         setDataSource(listObjects);
       })
       .catch((e) => {
-        console.log(e);
+        message.error('Erro ao tentar trazer lista de preços');
       });
   }
 

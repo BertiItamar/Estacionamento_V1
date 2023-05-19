@@ -1,4 +1,5 @@
 ﻿using DesafioEstacionamentoBenner.Services.Interfaces;
+using Infrastructure.DTO;
 using Infrastructure.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,6 +31,10 @@ public class PriceListController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> PostAsync(PriceList entity)
     {
+        if (entity.FinalDate < entity.InitialDate)
+        {
+            throw new AppException("A data de saída precisa ser maior que a data de entrada!");
+        }
         return Ok(await _service.PostAsync(entity));
     }
 
