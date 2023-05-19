@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, message } from 'antd';
 import api from '../Services/api';
-import moment from 'moment';
 import CadastroModal from '../Components/Modal/ModalRegistration';
 import SaidaModal from '../Components/Modal/ModalExit';
 import ModalCadastroValores from '../Components/Modal/ModalValuesParking';
@@ -180,8 +179,8 @@ export default function Home() {
     return `${hours || 0} horas ${minutes || 0} minutos`;
   };
 
-  const formatDurationPrice = (hours) => {
-    return `${hours || 0} horas`;
+  const formatDurationPrice = (hours, minutes) => {
+    return hours === 0 ? `${minutes || 0} minutos` : `${hours || 0} horas `;
   };
 
   const columnsPrice = [
@@ -248,7 +247,8 @@ export default function Home() {
       title: 'Tempo Cobrado',
       dataIndex: 'chargedTime',
       key: 'chargedTime',
-      render: (text, record) => formatDurationPrice(record.chargedTime),
+      render: (text, record) =>
+        formatDurationPrice(record.chargedTime, record.minutesDuration),
     },
     {
       title: 'Preço',
@@ -263,68 +263,80 @@ export default function Home() {
     GetPriceList();
   }, []);
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        marginTop: '  200px',
-      }}
-    >
-      <div style={{ position: 'absolute', top: 0, right: 0 }}>
+    <>
+      <h1
+        style={{
+          textAlign: 'center',
+          marginTop: 60,
+          marginBottom: -110,
+          fontSize: 50,
+        }}
+      >
+        Estacionamento Benner
+      </h1>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          marginTop: '  200px',
+        }}
+      >
+        <div style={{ position: 'absolute', top: 0, right: 0 }}>
+          <Table
+            columns={columnsPrice}
+            dataSource={dataSourcePrice}
+            loading={loading}
+            style={{ width: '100%', maxWidth: 'px', maxHeight: 30 }}
+            size="small"
+            pagination={{ pageSize: 7, hideOnSinglePage: true }}
+          />
+        </div>
+
+        <div>
+          <Button
+            style={{ marginRight: '10px', marginBottom: '10px' }}
+            onClick={() => setIsCadastroModalVisible(true)}
+          >
+            Abrir Cadastro de Veículo
+          </Button>
+          <Button
+            style={{ marginRight: '10px', marginBottom: '10px' }}
+            onClick={() => setIsSaidaModalVisible(true)}
+          >
+            Saída de veículo
+          </Button>
+          <Button onClick={handleOpenModal}>
+            Cadastro de Preços do Estacionamento
+          </Button>
+        </div>
+
+        {/* Tabela centralizada */}
         <Table
-          columns={columnsPrice}
-          dataSource={dataSourcePrice}
+          columns={columns}
+          dataSource={dataSource}
+          pagination={{ pageSize: 10 }}
           loading={loading}
-          style={{ width: '100%', maxWidth: 'px', maxHeight: 30 }}
-          size="small"
-          pagination={{ pageSize: 7, hideOnSinglePage: true }}
+          style={{ width: '95%', maxWidth: '1000px', margin: 'auto' }}
         />
+        <div>
+          <CadastroModal
+            visible={isCadastroModalVisible}
+            onClose={closeCadastroModal}
+            onSubmit={handleCadastroSubmit}
+          />
+          <SaidaModal
+            visible={isSaidaModalVisible}
+            onClose={closeSaidaModal}
+            onSubmit={handleExitSubmit}
+          />
+          <ModalCadastroValores
+            visible={isModalVisible}
+            onClose={handleCloseModal}
+            onSubmit={handleFormSubmit}
+          />
+        </div>
       </div>
-
-      <div>
-        <Button
-          style={{ marginRight: '10px', marginBottom: '10px' }}
-          onClick={() => setIsCadastroModalVisible(true)}
-        >
-          Abrir Cadastro de Veículo
-        </Button>
-        <Button
-          style={{ marginRight: '10px', marginBottom: '10px' }}
-          onClick={() => setIsSaidaModalVisible(true)}
-        >
-          Saída de veículo
-        </Button>
-        <Button onClick={handleOpenModal}>
-          Cadastro de Preços do Estacionamento
-        </Button>
-      </div>
-
-      {/* Tabela centralizada */}
-      <Table
-        columns={columns}
-        dataSource={dataSource}
-        pagination={{ pageSize: 10 }}
-        loading={loading}
-        style={{ width: '95%', maxWidth: '1000px', margin: 'auto' }}
-      />
-      <div>
-        <CadastroModal
-          visible={isCadastroModalVisible}
-          onClose={closeCadastroModal}
-          onSubmit={handleCadastroSubmit}
-        />
-        <SaidaModal
-          visible={isSaidaModalVisible}
-          onClose={closeSaidaModal}
-          onSubmit={handleExitSubmit}
-        />
-        <ModalCadastroValores
-          visible={isModalVisible}
-          onClose={handleCloseModal}
-          onSubmit={handleFormSubmit}
-        />
-      </div>
-    </div>
+    </>
   );
 }
