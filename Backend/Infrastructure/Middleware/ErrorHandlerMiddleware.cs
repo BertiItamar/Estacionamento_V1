@@ -3,50 +3,54 @@ using Microsoft.AspNetCore.Http;
 using System.Net;
 using System.Text.Json;
 
-namespace Infrastructure.Middleware;
-
-public class ErrorHandlerMiddleware
+namespace Infrastructure.Middleware
 {
-    private readonly RequestDelegate _next;
-
-    public ErrorHandlerMiddleware(RequestDelegate next)
+    public class ErrorHandlerMiddleware
     {
-        _next = next;
-    }
+        private readonly RequestDelegate _next;
 
-    public async Task Invoke(HttpContext context)
-    {
-        try
+        public ErrorHandlerMiddleware(RequestDelegate next)
         {
-            await _next(context);
+            _next = next;
         }
-        catch (Exception error)
-        {
-            var response = context.Response;
-            response.ContentType = "application/json";
 
-            switch (error)
+        public async Task Invoke(HttpContext context)
+        {
+            try
             {
-                case AppException e:
-                    // custom application error
-                    response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    break;
-                case KeyNotFoundException e:
-                    // not found error
-                    response.StatusCode = (int)HttpStatusCode.NotFound;
-                    break;
-                default:
-                    // unhandled error
-                    response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    break;    
+                await _next(context); // Chama o próximo middleware na cadeia de execução
             }
-            if (error != null)
+            catch (Exception error)
             {
-                var result = System.Text.Json.JsonSerializer.Serialize(new AppException { Message = error.Message }, new JsonSerializerOptions
+                var response = context.Response;
+                response.ContentType = "application/json";
+
+                switch (error)
                 {
-                    IgnoreNullValues = true
-                });
-                await response.WriteAsync(result);
+                    case AppException e:
+                        // Erro personalizado da aplicação
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        break;
+                    case KeyNotFoundException e:
+                        // Erro de item não encontrado
+                        response.StatusCode = (int)HttpStatusCode.NotFound;
+                        break;
+                    default:
+                        // Erro não tratado
+                        response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        break;
+                }
+
+                if (error != null)
+                {
+                    // Serializa a mensagem de erro para JSON
+                    var result = System.Text.Json.JsonSerializer.Serialize(new AppException { Message = error.Message }, new JsonSerializerOptions
+                    {
+                        IgnoreNullValues = true
+                    });
+
+                    await response.WriteAsync(result); // Escreve a resposta com a mensagem de erro serializada em JSON
+                }
             }
         }
     }
