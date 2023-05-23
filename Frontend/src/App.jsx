@@ -9,7 +9,7 @@ function App() {
     <ConfigProvider
       locale={ptBR}
       theme={{
-        algorithm: theme.darkAlgorithm,
+        algorithm: theme.defaultAlgorithm,
         token: {
           colorPrimary: '#ff1e16',
           borderRadius: 16,

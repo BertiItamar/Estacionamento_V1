@@ -269,6 +269,7 @@ export default function Home() {
           marginTop: 60,
           marginBottom: -110,
           fontSize: 50,
+          color: '#333333',
         }}
       >
         Estacionamento Benner
