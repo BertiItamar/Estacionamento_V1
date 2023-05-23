@@ -1,4 +1,4 @@
-﻿using DesafioEstacionamentoBenner.DTO_s;
+﻿using DesafioEstacionamentoBenner.DTO;
 using Infrastructure.Entities;
 using Newtonsoft.Json;
 using System.Net;

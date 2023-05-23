@@ -1,4 +1,4 @@
-﻿using DesafioEstacionamentoBenner.DTO_s;
+﻿using DesafioEstacionamentoBenner.DTO;
 using DesafioEstacionamentoBenner.Services.Interfaces;
 using Infrastructure.Entities;
 using Microsoft.AspNetCore.Mvc;

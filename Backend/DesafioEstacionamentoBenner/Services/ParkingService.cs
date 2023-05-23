@@ -1,4 +1,4 @@
-﻿using DesafioEstacionamentoBenner.DTO_s;
+﻿using DesafioEstacionamentoBenner.DTO;
 using DesafioEstacionamentoBenner.Repositories.Interfaces;
 using DesafioEstacionamentoBenner.Services.Interfaces;
 using Infrastructure.DTO;
