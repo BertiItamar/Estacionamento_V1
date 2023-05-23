@@ -1,4 +1,4 @@
-﻿namespace DesafioEstacionamentoBenner.DTO_s;
+﻿namespace DesafioEstacionamentoBenner.DTO;
 
 public class RegisterDepartureRequestDTO
 {
