@@ -61,7 +61,8 @@ public class PriceListService : IPriceListService
     /// <returns>A tabela de preços ativa para a data especificada, ou null se não houver nenhuma tabela ativa.</returns>
     public PriceList GetActivePriceList(DateTime date)
     {
-        return _repository.GetAllAsync().Result.FirstOrDefault(pl => pl.IsActive && pl.InitialDate <= date && pl.FinalDate >= date);
+        var currentDate = date.Date; // Ignorando a hora para fazer a query somente pela data no banco. 
+        return _repository.GetAllAsync().Result.FirstOrDefault(pl => pl.IsActive && pl.InitialDate.Date <= currentDate && pl.FinalDate.Date >= currentDate);
     }
 
     /// <summary>
